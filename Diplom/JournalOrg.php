@@ -2,6 +2,9 @@
 require 'connectionstring.php';
 $subj = $_POST['subjVal'];
 $grp = $_POST['grpVal'];
+$gquant = 0;
+$gsum = 0;
+$nquant = 0;
 $DTable = $conn->query("SELECT DISTINCT Grade_date FROM `Grades` JOIN `subjects` ON Grades_FK_subject = Subject_ID
 	WHERE Subject_name = '$subj' AND `Grades_FK_person` = (SELECT Person_ID FROM `People`
 	JOIN `Group_Access` ON Person_ID = FK_Person_G
@@ -16,6 +19,8 @@ $DTable = $conn->query("SELECT DISTINCT Grade_date FROM `Grades` JOIN `subjects`
   }
 
    ?>
+	 <td>Ср. балл</td>
+	 <td>кол-во Н/Я</td>
 </tr>
 <?php
     $STable = $conn->query("SELECT CONCAT(Last_name, ' ', first_Name) AS FIO FROM People
@@ -24,6 +29,9 @@ $DTable = $conn->query("SELECT DISTINCT Grade_date FROM `Grades` JOIN `subjects`
     WHERE Group_Name = '$grp' AND `Role` = 'Студент' ORDER BY Last_name ASC");
 
     while ($row1 = mysqli_fetch_assoc($STable)){
+			$gquant = 0;
+			$gsum = 0;
+			$nquant = 0;
       echo "<tr>";
       echo "<td>".$row1['FIO']."</td>";
 			$GTable = $conn->query("SELECT Grade_ID, Grade FROM `Grades`
@@ -32,8 +40,24 @@ $DTable = $conn->query("SELECT DISTINCT Grade_date FROM `Grades` JOIN `subjects`
 															WHERE Concat(last_Name, ' ', First_name) = '$row1[FIO]'
 															AND Subject_name = '$subj' ORDER BY Grade_date ASC;");
 			while($row2 = mysqli_fetch_assoc($GTable)){
+				switch ($row2['Grade']) {
+					case 'Н':
+					$nquant++;
+						break;
+					case '':
+						break;
+					default:
+					$gsum += $row2['Grade'];
+					$gquant++;
+						break;
+				}
 				echo "<td id=\"".$row2['Grade_ID']."\" class=\"Grade\">".$row2['Grade']."</td>";
 			}
+			if($gquant == 0){
+				$gquant += 1;
+			}
+			echo "<td>".round($gsum / $gquant, 2)."</td>";
+			echo "<td>$nquant</td>";
       echo "</tr>";
     }
 ?>

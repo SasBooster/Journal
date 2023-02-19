@@ -1,3 +1,8 @@
+<?php
+if(isset($_COOKIE['logol']) && isset($_COOKIE['pasap'])){
+  header('Location: /auth.php');
+}
+ ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>

@@ -1,7 +1,7 @@
 <?php
 require 'connectionstring.php';
-$logol = $_POST['logol'];
-$pasap = $_POST['pasap'];
+$logol = $_COOKIE['logol'];
+$pasap = $_COOKIE['pasap'];
 ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -20,6 +20,7 @@ $pasap = $_POST['pasap'];
     }
     th, tr, td{
       border: solid;
+      text-align: center;
     }
     .Teach{
       cursor: pointer;
@@ -49,7 +50,9 @@ $pasap = $_POST['pasap'];
         }
        ?>
     </select>
-    <a href="index.php" style="align: right;">Выйти</a>
+    <form action="exit.php" method="post">
+      <button type="submit" name="button">Выйти</button>
+    </form>
     <table id="ens">
 
     </table>
